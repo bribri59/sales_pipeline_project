@@ -1,0 +1,15 @@
+bronze:
+  db_name: "sales_bronze"
+  raw_root: "/Volumes/workspace/sales/raw_data"
+  archive_root: "/Volumes/workspace/sales/archive"
+
+silver:
+  db_name: "sales_silver"
+  catalogue_path: "/Volumes/workspace/sales/raw_data/catalogue_produits.csv"
+
+gold:
+  db_name: "sales_gold"
+  rates:
+    EUR: 1.0
+    USD: 0.93
+    JPY: 0.006
