@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sales_pipeline"
-version = "0.1.1"
+version = "0.1.2" # J'ai augmenté la version pour forcer la mise à jour pip
 description = "Pipeline Spark de ventes"
 authors = [{name = "Briac Six"}]
 dependencies = [
@@ -12,5 +12,12 @@ dependencies = [
   "pyyaml"
 ]
 
+[tool.setuptools]
+packages = ["sales_pipeline", "sales_pipeline.bronze", "sales_pipeline.silver", "sales_pipeline.gold", "sales_pipeline.utils"]
+
+[tool.setuptools.package-data]
+"sales_pipeline" = ["config/*.yaml"]
+
 [tool.setuptools.packages.find]
 where = ["."]
+include = ["sales_pipeline*"]
