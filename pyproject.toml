@@ -12,12 +12,6 @@ dependencies = [
   "pyyaml"
 ]
 
-[tool.setuptools]
-packages = ["sales_pipeline", "sales_pipeline.bronze", "sales_pipeline.silver", "sales_pipeline.gold", "sales_pipeline.utils"]
-
-[tool.setuptools.package-data]
-"sales_pipeline" = ["config/*.yaml"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["sales_pipeline*"]
