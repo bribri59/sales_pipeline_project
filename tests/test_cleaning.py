@@ -8,17 +8,12 @@ from sales_pipeline.silver.cleaning import build_silver_table
 
 
 def _get_dbutils(spark):
-    """
-    Récupère dbutils de façon fiable même quand pytest n'a pas la variable globale dbutils.
-    Compatible Databricks Serverless / Spark Connect.
-    """
     try:
         from pyspark.dbutils import DBUtils
         return DBUtils(spark)
     except Exception as e:
         raise RuntimeError(
             "Impossible d'initialiser DBUtils via pyspark.dbutils.DBUtils(spark). "
-            "Assure-toi d'exécuter ce test dans Databricks."
         ) from e
 
 

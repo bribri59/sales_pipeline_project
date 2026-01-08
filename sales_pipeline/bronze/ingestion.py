@@ -39,7 +39,11 @@ def ingest_boutique(
     if table_exists:
         writer.mode("append").saveAsTable(table_name)
     else:
-        writer.mode("overwrite").saveAsTable(table_name)
+        writer.mode("overwrite") \
+              .option("delta.enableChangeDataFeed", "true") \
+              .saveAsTable(table_name)
+        
+    spark.sql(f"ALTER TABLE {table_name} SET TBLPROPERTIES (delta.enableChangeDataFeed = true)")
 
 
     dbutils.fs.mkdirs(archive_path)
@@ -53,9 +57,6 @@ def ingest_boutique(
 
 
 def ingest_all_boutiques(spark, dbutils, config: dict) -> None:
-    """
-    Appelle l’ingestion pour New York / Paris / Tokyo.
-    """
     bronze_cfg = config["bronze"]
     bronze_db = bronze_cfg["db_name"]
     raw_root = bronze_cfg["raw_root"]

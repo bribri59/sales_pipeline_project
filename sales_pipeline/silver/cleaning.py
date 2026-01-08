@@ -1,5 +1,6 @@
 from pyspark.sql.functions import col, coalesce, lit, current_timestamp
 from pyspark.sql import DataFrame
+from delta.tables import DeltaTable
 
 def _load_catalogue(spark, path: str) -> DataFrame:
     return (
@@ -104,15 +105,23 @@ def build_silver_table(spark, config: dict) -> DataFrame:
 
     df_silver = df_ny.unionByName(df_paris).unionByName(df_tokyo)
 
-    silver_table = f"{silver_db}.ventes_unifiees"
+    silver_table_name = f"{silver_db}.ventes_unifiees"
 
-    (
-        df_silver
-          .write
-          .format("delta")
-          .mode("overwrite")
-          .saveAsTable(silver_table)
-    )
+    if spark.catalog.tableExists(silver_table_name):
+        print(f"Mise à jour incrémentale de {silver_table_name}")
+        target_table = DeltaTable.forName(spark, silver_table_name)
+        
+        target_table.alias("target").merge(
+            df_silver.alias("updates"),
+            "target.ID_Vente = updates.ID_Vente AND target.Nom_Boutique = updates.Nom_Boutique AND target.Date_Vente = updates.Date_Vente"
+        ).whenMatchedUpdateAll() \
+         .whenNotMatchedInsertAll() \
+         .execute()
+    else:
+        print(f"Création initiale de la table {silver_table_name}")
+        df_silver.write.format("delta") \
+                 .option("delta.enableChangeDataFeed", "true") \
+                 .saveAsTable(silver_table_name)
 
     print("===== FIN SILVER =====")
     return df_silver
