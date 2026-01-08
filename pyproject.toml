@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sales_pipeline"
-version = "0.1.2" # J'ai augmenté la version pour forcer la mise à jour pip
+version = "0.1.2"
 description = "Pipeline Spark de ventes"
 authors = [{name = "Briac Six"}]
 dependencies = [
